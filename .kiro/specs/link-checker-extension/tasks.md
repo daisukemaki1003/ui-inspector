@@ -7,14 +7,14 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
 
 ## Tasks
 
-- [ ] 1. プロジェクト基盤とマニフェスト設定
+- [x] 1. プロジェクト基盤とマニフェスト設定
 - [x] 1.1 拡張機能プロジェクト構造を作成する
   - 拡張機能のディレクトリ構成を整備（src/popup, src/background, src/content, src/shared）
   - TypeScript設定ファイルを作成し、ES Modules対応を構成
   - 共通の型定義ファイルを配置（LinkInfo, ValidationResult, MessageType等）
   - _Requirements: 4.1_
 
-- [ ] 1.2 Manifest V3設定ファイルを構成する
+- [x] 1.2 Manifest V3設定ファイルを構成する
   - manifest.jsonを作成し、Manifest V3形式で定義
   - **`chrome.scripting`権限を追加し、オンデマンドContent Scriptインジェクション方式を採用**（常時ロードを避けパフォーマンス向上）
   - host_permissions、activeTab、storage、downloads、scripting権限を設定
