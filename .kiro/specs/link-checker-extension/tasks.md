@@ -34,7 +34,7 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
 ---
 
 - [ ] 3. Content Script機能の実装
-- [ ] 3.1 (P) リンク抽出機能を実装する
+- [x] 3.1 (P) リンク抽出機能を実装する
   - a[href], img[src], link[href], script[src]タグからURLを収集
   - **一意識別用のdata属性（data-lc-id）を各要素に付与**（DOM変更に対する堅牢性向上）
   - 相対URLを絶対URLに変換し、無効なスキーム（javascript:, mailto:, data:）を除外
