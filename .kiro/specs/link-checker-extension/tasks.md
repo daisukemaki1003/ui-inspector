@@ -52,7 +52,7 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
 ---
 
 - [ ] 4. Service Worker コア機能の実装
-- [ ] 4.1 HTTP検証エンジンを実装する
+- [x] 4.1 HTTP検証エンジンを実装する
   - HEADリクエストによるステータスコード取得（失敗時GETフォールバック）
   - HTTPステータスコードの分類ロジック（2xx:success, 3xx:redirect, 4xx/5xx:error）
   - AbortControllerによるタイムアウト管理（デフォルト10秒）
