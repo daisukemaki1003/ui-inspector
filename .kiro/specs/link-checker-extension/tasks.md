@@ -8,7 +8,7 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
 ## Tasks
 
 - [ ] 1. プロジェクト基盤とマニフェスト設定
-- [ ] 1.1 拡張機能プロジェクト構造を作成する
+- [x] 1.1 拡張機能プロジェクト構造を作成する
   - 拡張機能のディレクトリ構成を整備（src/popup, src/background, src/content, src/shared）
   - TypeScript設定ファイルを作成し、ES Modules対応を構成
   - 共通の型定義ファイルを配置（LinkInfo, ValidationResult, MessageType等）

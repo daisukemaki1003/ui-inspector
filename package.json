@@ -1,0 +1,18 @@
+{
+  "name": "link-checker-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension to check for broken links on the current page",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && node scripts/build.js",
+    "test": "echo \"No test framework configured yet\" && exit 0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
