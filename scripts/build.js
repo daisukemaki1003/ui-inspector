@@ -32,16 +32,19 @@ const entryPoints = [
     name: 'background',
     input: join(projectRoot, 'src/background/background.ts'),
     output: join(projectRoot, 'background.js'),
+    format: 'esm', // Service Worker supports ES modules
   },
   {
     name: 'content',
     input: join(projectRoot, 'src/content/content.ts'),
     output: join(projectRoot, 'content.js'),
+    format: 'iife', // Content Script must be IIFE (no module support)
   },
   {
     name: 'popup',
     input: join(projectRoot, 'src/popup/popup.ts'),
     output: join(projectRoot, 'popup.js'),
+    format: 'iife', // Popup as IIFE for simplicity
   },
 ];
 
@@ -52,10 +55,11 @@ async function build() {
     for (const entry of entryPoints) {
       await esbuild.build({
         ...commonOptions,
+        format: entry.format, // Use entry-specific format
         entryPoints: [entry.input],
         outfile: entry.output,
       });
-      console.log(`  ✓ ${entry.name}.js`);
+      console.log(`  ✓ ${entry.name}.js (${entry.format})`);
     }
 
     console.log('\nBuild completed successfully!');
