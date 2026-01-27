@@ -66,7 +66,7 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
   - キャンセルフラグによる中断処理とAbortControllerの一括abort
   - _Requirements: 5.1, 5.3, 5.4, 5.5_
 
-- [ ] 4.3 進捗通知システムを実装する
+- [x] 4.3 進捗通知システムを実装する
   - Port API経由でのリアルタイム進捗送信
   - 検証完了件数、現在処理中のURL、残り件数の通知
   - Popup切断時の状態保持とchrome.storage経由の復元
