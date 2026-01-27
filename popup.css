@@ -1,5 +1,8 @@
 /* Link Checker Popup Styles */
-/* Will be fully implemented in Task 5.1 */
+
+/* =============================================================================
+   Base Styles
+   ============================================================================= */
 
 * {
   box-sizing: border-box;
@@ -13,21 +16,419 @@ body {
   line-height: 1.5;
   color: #333;
   background: #fff;
-  min-width: 300px;
-  min-height: 200px;
+  min-width: 360px;
+  max-width: 400px;
 }
 
-#app {
+.hidden {
+  display: none !important;
+}
+
+/* =============================================================================
+   Container
+   ============================================================================= */
+
+.popup-container {
   padding: 16px;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
-header h1 {
+/* =============================================================================
+   Header
+   ============================================================================= */
+
+.header {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-title {
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 16px;
   color: #1a1a1a;
 }
 
-main {
-  min-height: 100px;
+/* =============================================================================
+   Action Buttons
+   ============================================================================= */
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-icon {
+  font-size: 12px;
+}
+
+.btn-primary {
+  flex: 1;
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.btn-outline {
+  background: #fff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* =============================================================================
+   Progress Section
+   ============================================================================= */
+
+.progress-section {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.progress-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.progress-bar-container {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-current {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =============================================================================
+   Summary Section
+   ============================================================================= */
+
+.summary-section {
+  margin-bottom: 16px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 8px;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.summary-value {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.summary-label {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.summary-total .summary-value {
+  color: #1e293b;
+}
+
+.summary-success .summary-value {
+  color: #16a34a;
+}
+
+.summary-redirect .summary-value {
+  color: #ca8a04;
+}
+
+.summary-error .summary-value {
+  color: #dc2626;
+}
+
+/* =============================================================================
+   Filter Section
+   ============================================================================= */
+
+.filter-section {
+  margin-bottom: 12px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+.filter-btn {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  color: #1e293b;
+  background: #e2e8f0;
+}
+
+.filter-btn.active {
+  color: #1e293b;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* =============================================================================
+   Results Section
+   ============================================================================= */
+
+.results-section {
+  margin-bottom: 16px;
+}
+
+.results-list {
+  list-style: none;
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.result-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-item:hover {
+  background: #f8fafc;
+}
+
+.result-status {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 24px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.result-status.status-success {
+  color: #16a34a;
+  background: #dcfce7;
+}
+
+.result-status.status-redirect {
+  color: #ca8a04;
+  background: #fef9c3;
+}
+
+.result-status.status-error {
+  color: #dc2626;
+  background: #fee2e2;
+}
+
+.result-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.result-url {
+  font-size: 12px;
+  color: #1e293b;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.result-text {
+  margin-top: 2px;
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.no-results {
+  padding: 24px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* =============================================================================
+   Empty State
+   ============================================================================= */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+.empty-text {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* =============================================================================
+   Error State
+   ============================================================================= */
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  margin: 16px 0;
+  background: #fef2f2;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.error-text {
+  font-size: 13px;
+  color: #991b1b;
+  line-height: 1.5;
+}
+
+/* =============================================================================
+   Scrollbar Styles
+   ============================================================================= */
+
+.results-list::-webkit-scrollbar,
+.popup-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.results-list::-webkit-scrollbar-track,
+.popup-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.results-list::-webkit-scrollbar-thumb,
+.popup-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.results-list::-webkit-scrollbar-thumb:hover,
+.popup-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +7,95 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <div id="app">
-    <header>
-      <h1>Link Checker</h1>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="header-title">Link Checker</h1>
     </header>
-    <main>
-      <!-- UI will be implemented in Task 5.x -->
-      <p>Loading...</p>
-    </main>
+
+    <!-- Action Buttons -->
+    <section class="actions">
+      <button id="start-btn" class="btn btn-primary">
+        <span class="btn-icon">▶</span>
+        チェック開始
+      </button>
+      <button id="cancel-btn" class="btn btn-secondary" disabled>
+        <span class="btn-icon">✕</span>
+        キャンセル
+      </button>
+      <button id="export-btn" class="btn btn-outline" disabled>
+        <span class="btn-icon">↓</span>
+        CSV出力
+      </button>
+    </section>
+
+    <!-- Progress Section -->
+    <section id="progress-section" class="progress-section hidden">
+      <div class="progress-header">
+        <span class="progress-label">検証中...</span>
+        <span id="progress-count" class="progress-count">0 / 0</span>
+      </div>
+      <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+      </div>
+      <div id="progress-current" class="progress-current"></div>
+    </section>
+
+    <!-- Summary Section -->
+    <section id="summary-section" class="summary-section hidden">
+      <div class="summary-grid">
+        <div class="summary-item summary-total">
+          <span class="summary-value" id="summary-total">0</span>
+          <span class="summary-label">総数</span>
+        </div>
+        <div class="summary-item summary-success">
+          <span class="summary-value" id="summary-success">0</span>
+          <span class="summary-label">正常</span>
+        </div>
+        <div class="summary-item summary-redirect">
+          <span class="summary-value" id="summary-redirect">0</span>
+          <span class="summary-label">リダイレクト</span>
+        </div>
+        <div class="summary-item summary-error">
+          <span class="summary-value" id="summary-error">0</span>
+          <span class="summary-label">エラー</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section id="filter-section" class="filter-section hidden">
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">全て</button>
+        <button class="filter-btn" data-filter="success">正常</button>
+        <button class="filter-btn" data-filter="redirect">リダイレクト</button>
+        <button class="filter-btn" data-filter="error">エラー</button>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results-section" class="results-section hidden">
+      <ul id="results-list" class="results-list">
+        <!-- Results will be dynamically inserted here -->
+      </ul>
+      <div id="no-results" class="no-results hidden">
+        該当するリンクがありません
+      </div>
+    </section>
+
+    <!-- Empty State -->
+    <section id="empty-state" class="empty-state">
+      <div class="empty-icon">🔗</div>
+      <p class="empty-text">「チェック開始」ボタンを押して<br>ページ内のリンクを検証します</p>
+    </section>
+
+    <!-- Error State -->
+    <section id="error-state" class="error-state hidden">
+      <div class="error-icon">⚠️</div>
+      <p id="error-message" class="error-text"></p>
+    </section>
   </div>
+
   <script type="module" src="popup.js"></script>
 </body>
 </html>

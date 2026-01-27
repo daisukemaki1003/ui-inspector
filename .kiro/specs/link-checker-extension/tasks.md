@@ -51,7 +51,7 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
 
 ---
 
-- [ ] 4. Service Worker コア機能の実装
+- [x] 4. Service Worker コア機能の実装
 - [x] 4.1 HTTP検証エンジンを実装する
   - HEADリクエストによるステータスコード取得（失敗時GETフォールバック）
   - HTTPステータスコードの分類ロジック（2xx:success, 3xx:redirect, 4xx/5xx:error）
@@ -73,7 +73,7 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
   - 検証完了イベントの発火
   - _Requirements: 2.3_
 
-- [ ] 4.4 (P) Content Scriptのオンデマンドインジェクションを実装する
+- [x] 4.4 (P) Content Scriptのオンデマンドインジェクションを実装する
   - **chrome.scripting.executeScriptによるContent Script動的注入**
   - 現在のタブIDを取得し、必要時のみスクリプトを実行
   - インジェクション済みフラグの管理（二重実行防止）
@@ -82,7 +82,7 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
 ---
 
 - [ ] 5. Popup UI 実装
-- [ ] 5.1 基本UIレイアウトを構築する
+- [x] 5.1 基本UIレイアウトを構築する
   - ポップアップのHTML/CSS構造を作成（レスポンシブ対応、最小幅300px）
   - チェック開始ボタン、キャンセルボタン、エクスポートボタンを配置
   - 進捗バーコンポーネントを実装（パーセント表示、現在処理中URL表示）
