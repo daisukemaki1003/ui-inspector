@@ -5,7 +5,9 @@
  * - Start/Cancel/Export button actions
  * - Progress bar updates
  * - Summary statistics display
- * - Result list rendering
+ * - Result list rendering with grouping
+ * - State restoration from chrome.storage
+ * - Port-based progress streaming
  */
 
 import type {
@@ -15,7 +17,9 @@ import type {
   ValidationProgress,
   ValidationResult,
   PopupState,
+  ExtensionMessage,
 } from '../shared/types.js';
+import { connectToBackground, isMessageType } from '../shared/messaging.js';
 
 // =============================================================================
 // DOM Elements
@@ -78,6 +82,9 @@ let state: PopupState = {
     error: 0,
   },
 };
+
+// Port connection for progress streaming
+let portConnection: { port: chrome.runtime.Port; disconnect: () => void } | null = null;
 
 // =============================================================================
 // UI Update Functions
@@ -220,6 +227,26 @@ function getFilteredResults(): ValidationResult[] {
 }
 
 /**
+ * Sort results by status category (errors first, then redirects, then success)
+ */
+function sortResultsByStatus(results: ValidationResult[]): ValidationResult[] {
+  const categoryOrder: Record<string, number> = {
+    client_error: 0,
+    server_error: 0,
+    timeout: 0,
+    network_error: 0,
+    redirect: 1,
+    success: 2,
+  };
+
+  return [...results].sort((a, b) => {
+    const orderA = categoryOrder[a.statusCategory] ?? 3;
+    const orderB = categoryOrder[b.statusCategory] ?? 3;
+    return orderA - orderB;
+  });
+}
+
+/**
  * Get CSS class for status category
  */
 function getStatusClass(category: string): string {
@@ -244,17 +271,18 @@ function getStatusDisplay(result: ValidationResult): string {
 }
 
 /**
- * Update results list
+ * Update results list with grouping by status
  */
 function updateResults(): void {
   updateFilterButtons();
 
   const filtered = getFilteredResults();
+  const sorted = sortResultsByStatus(filtered);
 
   // Clear existing results
   resultsList.innerHTML = '';
 
-  if (filtered.length === 0) {
+  if (sorted.length === 0) {
     noResults.classList.remove('hidden');
     return;
   }
@@ -262,7 +290,7 @@ function updateResults(): void {
   noResults.classList.add('hidden');
 
   // Render each result
-  filtered.forEach((result) => {
+  sorted.forEach((result) => {
     const li = document.createElement('li');
     li.className = 'result-item';
     li.dataset['elementId'] = result.elementId;
@@ -381,6 +409,103 @@ export function getState(): PopupState {
 }
 
 // =============================================================================
+// Port Connection for Progress Streaming
+// =============================================================================
+
+/**
+ * Handle messages from the Service Worker via Port
+ */
+function handlePortMessage(message: ExtensionMessage): void {
+  if (isMessageType(message, 'VALIDATION_PROGRESS')) {
+    setProgress(message.payload);
+    // Ensure we're in checking phase
+    if (state.phase !== 'checking') {
+      setPhase('checking');
+    }
+  } else if (isMessageType(message, 'VALIDATION_COMPLETE')) {
+    setResults(message.payload);
+    setPhase('completed');
+  }
+}
+
+/**
+ * Handle Port disconnection
+ */
+function handlePortDisconnect(): void {
+  console.log('[Popup] Port disconnected');
+  portConnection = null;
+}
+
+/**
+ * Establish Port connection to Service Worker
+ */
+function connectPort(): void {
+  if (portConnection) {
+    return; // Already connected
+  }
+
+  try {
+    portConnection = connectToBackground(handlePortMessage, handlePortDisconnect);
+    console.log('[Popup] Port connected');
+  } catch (error) {
+    console.error('[Popup] Failed to connect port:', error);
+  }
+}
+
+/**
+ * Disconnect Port
+ */
+function disconnectPort(): void {
+  if (portConnection) {
+    portConnection.disconnect();
+    portConnection = null;
+  }
+}
+
+// =============================================================================
+// State Restoration from chrome.storage
+// =============================================================================
+
+/**
+ * Restore state from chrome.storage on Popup open
+ */
+async function restoreState(): Promise<void> {
+  try {
+    // Try to get stored session state
+    const result = await chrome.storage.local.get(['currentSession', 'lastProgress', 'validationResults']);
+
+    const session = result['currentSession'];
+    const storedProgress = result['lastProgress'];
+    const storedResults = result['validationResults'];
+
+    // Check if there's an active checking session
+    if (session && session.status === 'checking') {
+      // Session is in progress, set to checking phase
+      state.phase = 'checking';
+      if (storedProgress?.progress) {
+        state.progress = storedProgress.progress;
+      }
+      connectPort(); // Connect to receive further progress updates
+    } else if (session && session.status === 'completed' && session.results) {
+      // Session is complete, show results
+      state.results = session.results;
+      state.summary = calculateSummary(session.results);
+      state.phase = 'completed';
+    } else if (storedResults && storedResults.length > 0) {
+      // Fallback to stored results
+      state.results = storedResults;
+      state.summary = calculateSummary(storedResults);
+      state.phase = 'completed';
+    }
+
+    updateUI();
+    console.log('[Popup] State restored:', state.phase);
+  } catch (error) {
+    console.error('[Popup] Failed to restore state:', error);
+  }
+}
+
+// =============================================================================
 // Event Handlers
 // =============================================================================
 
@@ -392,6 +517,9 @@ async function handleStartClick(): Promise<void> {
   hideError();
   setPhase('checking');
 
+  // Connect Port for progress streaming
+  connectPort();
+
   // Send START_CHECK message to service worker
   try {
     await chrome.runtime.sendMessage({ type: 'START_CHECK' });
@@ -399,6 +527,7 @@ async function handleStartClick(): Promise<void> {
     console.error('[Popup] Failed to start check:', error);
     showError('チェックを開始できませんでした');
     setPhase('idle');
+    disconnectPort();
   }
 }
 
@@ -411,6 +540,7 @@ async function handleCancelClick(): Promise<void> {
   try {
     await chrome.runtime.sendMessage({ type: 'CANCEL_CHECK' });
     setPhase('idle');
+    disconnectPort();
   } catch (error) {
     console.error('[Popup] Failed to cancel:', error);
   }
@@ -491,17 +621,27 @@ function setupEventListeners(): void {
 /**
  * Initialize popup
  */
-function initialize(): void {
+async function initialize(): Promise<void> {
   setupEventListeners();
-  updateUI();
+
+  // Restore previous state
+  await restoreState();
+
+  // If in checking phase, ensure Port is connected
+  if (state.phase === 'checking') {
+    connectPort();
+  }
+
   console.log('[Popup] Initialized');
 }
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initialize);
+  document.addEventListener('DOMContentLoaded', () => {
+    initialize().catch(console.error);
+  });
 } else {
-  initialize();
+  initialize().catch(console.error);
 }
 
 // Export for external access
