@@ -23,8 +23,8 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
 
 ---
 
-- [ ] 2. メッセージング基盤の実装
-- [ ] 2.1 型安全なメッセージバスを構築する
+- [x] 2. メッセージング基盤の実装
+- [x] 2.1 型安全なメッセージバスを構築する
   - 全メッセージタイプの型定義（START_CHECK, CANCEL_CHECK, EXTRACT_LINKS等）
   - chrome.runtime.sendMessage/onMessage のラッパー関数を実装
   - chrome.runtime.connect/Port APIのラッパーを実装（進捗ストリーミング用）
