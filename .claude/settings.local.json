@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Skill(kiro:spec-tasks)",
-      "Skill(kiro:spec-impl)"
+      "Skill(kiro:spec-impl)",
+      "Bash(npm install:*)"
     ]
   }
 }
