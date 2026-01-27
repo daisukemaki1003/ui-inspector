@@ -33,7 +33,7 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
 
 ---
 
-- [ ] 3. Content Script機能の実装
+- [x] 3. Content Script機能の実装
 - [x] 3.1 (P) リンク抽出機能を実装する
   - a[href], img[src], link[href], script[src]タグからURLを収集
   - **一意識別用のdata属性（data-lc-id）を各要素に付与**（DOM変更に対する堅牢性向上）
@@ -42,7 +42,7 @@ Chrome拡張機能「Link Checker」の実装タスク。Manifest V3準拠、Ser
   - 抽出結果をService Workerへ送信
   - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-- [ ] 3.2 (P) 要素ハイライト機能を実装する
+- [x] 3.2 (P) 要素ハイライト機能を実装する
   - **data-lc-id属性を使用して対象要素を特定**（インデックス方式より堅牢）
   - scrollIntoViewで要素をビューポートに表示
   - CSSアニメーションによるハイライト効果を適用（点滅、枠線）
