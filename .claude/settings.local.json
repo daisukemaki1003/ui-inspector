@@ -3,7 +3,8 @@
     "allow": [
       "Skill(kiro:spec-tasks)",
       "Skill(kiro:spec-impl)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(unzip:*)"
     ]
   }
 }
