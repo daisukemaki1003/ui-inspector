@@ -156,8 +156,11 @@ export type ExtensionMessage =
 /** Current phase of the popup UI */
 export type PopupPhase = 'idle' | 'checking' | 'completed';
 
-/** Filter options for result display */
+/** Filter options for result display by status */
 export type ResultFilter = 'all' | 'success' | 'redirect' | 'error';
+
+/** Filter options for result display by tag type */
+export type TagFilter = 'all' | 'A' | 'IMG' | 'LINK' | 'SCRIPT';
 
 /** Summary statistics for validation results */
 export interface ResultSummary {
@@ -179,8 +182,10 @@ export interface PopupState {
   progress: ValidationProgress | null;
   /** All validation results */
   results: ValidationResult[];
-  /** Current filter selection */
+  /** Current status filter selection */
   filter: ResultFilter;
+  /** Current tag type filter selection */
+  tagFilter: TagFilter;
   /** Summary statistics */
   summary: ResultSummary;
 }

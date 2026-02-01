@@ -225,15 +225,36 @@ body {
   margin-bottom: 12px;
 }
 
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.filter-label {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  width: 60px;
+}
+
 .filter-buttons {
   display: flex;
+  flex: 1;
   gap: 4px;
   padding: 4px;
   background: #f1f5f9;
   border-radius: 8px;
 }
 
-.filter-btn {
+.filter-btn,
+.tag-filter-btn {
   flex: 1;
   padding: 6px 8px;
   font-size: 12px;
@@ -246,12 +267,14 @@ body {
   transition: all 0.2s ease;
 }
 
-.filter-btn:hover {
+.filter-btn:hover,
+.tag-filter-btn:hover {
   color: #1e293b;
   background: #e2e8f0;
 }
 
-.filter-btn.active {
+.filter-btn.active,
+.tag-filter-btn.active {
   color: #1e293b;
   background: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);

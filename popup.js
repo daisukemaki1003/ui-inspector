@@ -63,11 +63,13 @@
   var noResults = $("no-results");
   var errorMessage = $("error-message");
   var filterButtons = document.querySelectorAll(".filter-btn");
+  var tagFilterButtons = document.querySelectorAll(".tag-filter-btn");
   var state = {
     phase: "idle",
     progress: null,
     results: [],
     filter: "all",
+    tagFilter: "all",
     summary: {
       total: 0,
       success: 0,
@@ -155,22 +157,36 @@
         btn.classList.remove("active");
       }
     });
+    tagFilterButtons.forEach((btn) => {
+      const tagFilter = btn.dataset["tagFilter"];
+      if (tagFilter === state.tagFilter) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
   }
   function getFilteredResults() {
-    if (state.filter === "all") {
-      return state.results;
-    }
     return state.results.filter((result) => {
-      switch (state.filter) {
-        case "success":
-          return result.statusCategory === "success";
-        case "redirect":
-          return result.statusCategory === "redirect";
-        case "error":
-          return result.statusCategory === "client_error" || result.statusCategory === "server_error" || result.statusCategory === "timeout" || result.statusCategory === "network_error";
-        default:
-          return true;
+      let matchesStatus = true;
+      if (state.filter !== "all") {
+        switch (state.filter) {
+          case "success":
+            matchesStatus = result.statusCategory === "success";
+            break;
+          case "redirect":
+            matchesStatus = result.statusCategory === "redirect";
+            break;
+          case "error":
+            matchesStatus = result.statusCategory === "client_error" || result.statusCategory === "server_error" || result.statusCategory === "timeout" || result.statusCategory === "network_error";
+            break;
+        }
       }
+      let matchesTag = true;
+      if (state.tagFilter !== "all") {
+        matchesTag = result.tagName === state.tagFilter;
+      }
+      return matchesStatus && matchesTag;
     });
   }
   function sortResultsByStatus(results) {
@@ -283,6 +299,10 @@
     state.filter = filter;
     updateResults();
   }
+  function setTagFilter(tagFilter) {
+    state.tagFilter = tagFilter;
+    updateResults();
+  }
   function getState() {
     return { ...state };
   }
@@ -385,6 +405,13 @@
       setFilter(filter);
     }
   }
+  function handleTagFilterClick(event) {
+    const button = event.target;
+    const tagFilter = button.dataset["tagFilter"];
+    if (tagFilter) {
+      setTagFilter(tagFilter);
+    }
+  }
   async function handleResultClick(event) {
     const target = event.target;
     const resultItem = target.closest(".result-item");
@@ -411,6 +438,9 @@
     exportBtn.addEventListener("click", handleExportClick);
     filterButtons.forEach((btn) => {
       btn.addEventListener("click", handleFilterClick);
+    });
+    tagFilterButtons.forEach((btn) => {
+      btn.addEventListener("click", handleTagFilterClick);
     });
     resultsList.addEventListener("click", handleResultClick);
   }

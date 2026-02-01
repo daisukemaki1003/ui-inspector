@@ -13,6 +13,7 @@
 import type {
   PopupPhase,
   ResultFilter,
+  TagFilter,
   ResultSummary,
   ValidationProgress,
   ValidationResult,
@@ -65,6 +66,7 @@ const errorMessage = $('error-message');
 
 // Filter buttons
 const filterButtons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+const tagFilterButtons = document.querySelectorAll<HTMLButtonElement>('.tag-filter-btn');
 
 // =============================================================================
 // State
@@ -75,6 +77,7 @@ let state: PopupState = {
   progress: null,
   results: [],
   filter: 'all',
+  tagFilter: 'all',
   summary: {
     total: 0,
     success: 0,
@@ -189,6 +192,7 @@ function updateSummary(): void {
  * Update filter button states
  */
 function updateFilterButtons(): void {
+  // Update status filter buttons
   filterButtons.forEach((btn) => {
     const filter = btn.dataset['filter'] as ResultFilter;
     if (filter === state.filter) {
@@ -197,32 +201,50 @@ function updateFilterButtons(): void {
       btn.classList.remove('active');
     }
   });
+
+  // Update tag filter buttons
+  tagFilterButtons.forEach((btn) => {
+    const tagFilter = btn.dataset['tagFilter'] as TagFilter;
+    if (tagFilter === state.tagFilter) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
 }
 
 /**
- * Get filtered results based on current filter
+ * Get filtered results based on current status filter and tag filter
  */
 function getFilteredResults(): ValidationResult[] {
-  if (state.filter === 'all') {
-    return state.results;
-  }
-
   return state.results.filter((result) => {
-    switch (state.filter) {
-      case 'success':
-        return result.statusCategory === 'success';
-      case 'redirect':
-        return result.statusCategory === 'redirect';
-      case 'error':
-        return (
-          result.statusCategory === 'client_error' ||
-          result.statusCategory === 'server_error' ||
-          result.statusCategory === 'timeout' ||
-          result.statusCategory === 'network_error'
-        );
-      default:
-        return true;
+    // Apply status filter
+    let matchesStatus = true;
+    if (state.filter !== 'all') {
+      switch (state.filter) {
+        case 'success':
+          matchesStatus = result.statusCategory === 'success';
+          break;
+        case 'redirect':
+          matchesStatus = result.statusCategory === 'redirect';
+          break;
+        case 'error':
+          matchesStatus =
+            result.statusCategory === 'client_error' ||
+            result.statusCategory === 'server_error' ||
+            result.statusCategory === 'timeout' ||
+            result.statusCategory === 'network_error';
+          break;
+      }
     }
+
+    // Apply tag filter
+    let matchesTag = true;
+    if (state.tagFilter !== 'all') {
+      matchesTag = result.tagName === state.tagFilter;
+    }
+
+    return matchesStatus && matchesTag;
   });
 }
 
@@ -394,10 +416,18 @@ function calculateSummary(results: ValidationResult[]): ResultSummary {
 }
 
 /**
- * Set filter and update results
+ * Set status filter and update results
  */
 export function setFilter(filter: ResultFilter): void {
   state.filter = filter;
+  updateResults();
+}
+
+/**
+ * Set tag filter and update results
+ */
+export function setTagFilter(tagFilter: TagFilter): void {
+  state.tagFilter = tagFilter;
   updateResults();
 }
 
@@ -561,13 +591,24 @@ async function handleExportClick(): Promise<void> {
 }
 
 /**
- * Handle filter button click
+ * Handle status filter button click
  */
 function handleFilterClick(event: Event): void {
   const button = event.target as HTMLButtonElement;
   const filter = button.dataset['filter'] as ResultFilter;
   if (filter) {
     setFilter(filter);
+  }
+}
+
+/**
+ * Handle tag filter button click
+ */
+function handleTagFilterClick(event: Event): void {
+  const button = event.target as HTMLButtonElement;
+  const tagFilter = button.dataset['tagFilter'] as TagFilter;
+  if (tagFilter) {
+    setTagFilter(tagFilter);
   }
 }
 
@@ -613,6 +654,10 @@ function setupEventListeners(): void {
 
   filterButtons.forEach((btn) => {
     btn.addEventListener('click', handleFilterClick);
+  });
+
+  tagFilterButtons.forEach((btn) => {
+    btn.addEventListener('click', handleTagFilterClick);
   });
 
   resultsList.addEventListener('click', handleResultClick);
