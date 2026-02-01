@@ -4,7 +4,9 @@
       "Skill(kiro:spec-tasks)",
       "Skill(kiro:spec-impl)",
       "Bash(npm install:*)",
-      "Bash(unzip:*)"
+      "Bash(unzip:*)",
+      "Bash(sips:*)",
+      "Bash(zip:*)"
     ]
   }
 }
